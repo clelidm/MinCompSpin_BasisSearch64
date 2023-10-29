@@ -1,5 +1,5 @@
 # MinCompSpin_BasisSearch
-This codes looks for the Best Basis representation for binary datasets
+This program searches for the Best Basis representation for a chosen binary dataset.
 
 ## Requirements
 
