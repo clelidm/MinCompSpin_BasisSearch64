@@ -1,5 +1,27 @@
-# MinCompSpin_BasisSearch
-This program searches for the Best Basis representation for a chosen binary dataset.
+# Search for the Best Basis Representation of a Binary Dataset
+# or: Best Independent Minimally Complex Models (MCM)
+
+This program searches for the **Best Basis representation for a chosen binary dataset**, while taking into account possible **high-order patterns of the data**. It was develop for the paper [*Statistical Inference of Minimally Complex Models*](https://arxiv.org/abs/2008.00520) [1]. More details on the general algorithm can be found in the paper.
+
+[1]  C. de Mulatier, P. P. Mazza, M. Marsili, *Statistical Inference of Minimally Complex Models*, [arXiv:2008.00520](https://arxiv.org/abs/2008.00520)
+
+## General information
+
+The Best basis for a binary data with `n` variables is the one for which the independent model formed by `n` field operators has the largest log-likelihood (and therefore the largest log-evidence, as all independent model with the same number of operators are equivalent -- see Ref[1]).
+
+There are two main functions that you can use to search for the best basis from the `main.cpp`:
+
+ - **In a fixed representation:** This function searches for the best Basis among all operators up to order `kmax` in the a given representation (the one in which the dataset stored in Nvect is written in):
+```c++
+BestBasisSearch_FixedRepresentation(vector<pair<uint64_t, unsigned int>> Nvect, unsigned int n, unsigned int N, unsigned int k_max, unsigned int B_it, bool bool_print = false)
+```
+If you take the largest order to be equal to the number of variables (`kmax = n`), then this function will perform an exhaustive search for the best basis among all possible operators. Note: we advise doing such search only for small systems (up to ~15 variables).
+
+ - **In varying representations:**
+```c++
+vector<Operator64> BestBasisSearch_Final(vector<pair<uint64_t, unsigned int>> Nvect, unsigned int n, unsigned int N, unsigned int k_max, bool bool_print = false)
+```
+This function performs the search procedure described in Ref.[1]. The codes searches for the best basis up to order `k_max`; the data is then successively transformed in the representation given by the previously found best basis and a new best basis searched for in this representation. The algorithm stops when the new basis found is identitity (i.e. the basis has not changed).
 
 ## Requirements
 
