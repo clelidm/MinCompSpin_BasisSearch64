@@ -9,7 +9,12 @@ This program searches for the **Best Basis representation for a chosen binary da
 
 The Best basis for a binary data with `n` variables is the one for which the independent model formed by `n` field operators has the largest log-likelihood (and therefore the largest log-evidence, as all independent model with the same number of operators are equivalent -- see Ref[1]).
 
-There are two main functions that you can use to search for the best basis from the `main.cpp`:
+There are three main functions that you can use to search for the best basis from the `main.cpp`:
+
+ - **Exhaustive Search:** This function will compute all $2^n-1$ operators and will search for the best basis among them with a Greedy approach (i.e. rank them from the most to least biased and extract the set of `n` most bias independent operators starting from the most biased one):
+```c++
+BestBasisSearch_FixedRepresentation(vector<pair<uint64_t, unsigned int>> Nvect, unsigned int n, unsigned int N, unsigned int k_max, unsigned int B_it, bool bool_print = false)
+```
 
  - **In a fixed representation:** This function searches for the best Basis among all operators up to order `kmax` in the a given representation (the one in which the dataset stored in Nvect is written in):
 ```c++
