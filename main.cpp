@@ -45,14 +45,14 @@ map<unsigned int, unsigned int> Histo_BasisOpOrder(vector<Operator64> Basis);
 /******************************************************************************/
 /************************   BASIS SEARCH TOOLS    *****************************/
 /******************************************************************************/
-// Fixed Representation:
-vector<Operator64> BestBasisSearch_FixedRepresentation(vector<pair<uint64_t, unsigned int>> Nvect, unsigned int n, unsigned int N, unsigned int k_max, unsigned int B_it, bool bool_print = false);
-
-// Changing representation:
-vector<Operator64> BestBasisSearch_Final(vector<pair<uint64_t, unsigned int>> Nvect, unsigned int n, unsigned int N, unsigned int k_max, bool bool_print = false);
-
 // Exhaustive Search:
 vector<Operator64> BestBasis_ExhaustiveSearch(vector<pair<uint64_t, unsigned int>> Nvect, unsigned int n, unsigned int N, bool bool_print = false);
+
+// Fixed Representation up to order `k_max``:
+vector<Operator64> BestBasisSearch_FixedRepresentation(vector<pair<uint64_t, unsigned int>> Nvect, unsigned int n, unsigned int N, unsigned int k_max, unsigned int B_it, bool bool_print = false);
+
+// Changing representation up to order `k_max``:
+vector<Operator64> BestBasisSearch_Final(vector<pair<uint64_t, unsigned int>> Nvect, unsigned int n, unsigned int N, unsigned int k_max, bool bool_print = false);
 
 /******************************************************************************/
 /************************** MAIN **********************************************/
