@@ -6,12 +6,12 @@
 ########################################################################################################################
 
 #### EXAMPLE: Big 5 dataset:
-datafilename := Big5-IPC1_VS3_Ne5.dat  # datafile name ### IMPORTANT: this file must be in the 'INPUT' folder
-n := 50		# number of binary variables in the datafile 
+#datafilename := Big5-IPC1_VS3_Ne5.dat  # datafile name ### IMPORTANT: this file must be in the 'INPUT' folder
+#n := 50		# number of binary variables in the datafile 
 
 #### EXAMPLE 2: US Supreme Court dataset:
-#datafilename := SCOTUS_n9_N895_Data.dat  
-#n := 9		
+datafilename := SCOTUS_n9_N895_Data.dat  
+n := 9		
 
 ########################################################################################################################
 ######## ENTER THE FOLLOWING IN YOUR TERMINAL:
@@ -30,7 +30,7 @@ CXXFLAGS = -std=c++11 #-O2  #Extra flags to give to the C++ compiler
 
 objects = tools.o ReadDataFile.o #Basis_Choice.o 
 
-objectsWdataH = BestBasis_Init_SetOp.o BestBasis.o BasisTools.o BestBasisSearch.o
+objectsWdataH = Init_OpSet.o ExtractBasis_inOpSet.o BasisTools.o BestBasis_IterativeSearch.o BestBasis_ExhaustiveSearch.o
 #directory =  Folder
 
 # Compilation -- Implicite rule:
@@ -48,17 +48,20 @@ BestBasis.out: $(objects) $(objectsWdataH) main.o
 main.o: main.cpp data.h
 	g++ $(CXXFLAGS) -c main.cpp -o main.o   # Compile main.cpp
 
-BestBasis_Init_SetOp.o: BestBasis_Init_SetOp.cpp data.h
-	g++ $(CXXFLAGS) -c BestBasis_Init_SetOp.cpp -o BestBasis_Init_SetOp.o   # Compile main.cpp
+Init_OpSet.o: Init_OpSet.cpp data.h
+	g++ $(CXXFLAGS) -c Init_OpSet.cpp -o Init_OpSet.o   # Compile main.cpp
 
-BestBasis.o: BestBasis.cpp data.h
-	g++ $(CXXFLAGS) -c BestBasis.cpp -o BestBasis.o   # Compile main.cpp
+ExtractBasis_inOpSet.o: ExtractBasis_inOpSet.cpp data.h
+	g++ $(CXXFLAGS) -c ExtractBasis_inOpSet.cpp -o ExtractBasis_inOpSet.o   # Compile main.cpp
 
 BasisTools.o: BasisTools.cpp data.h
 	g++ $(CXXFLAGS) -c BasisTools.cpp -o BasisTools.o   # Compile main.cpp
 
-BestBasisSearch.o: BestBasisSearch.cpp data.h
-	g++ $(CXXFLAGS) -c BestBasisSearch.cpp -o BestBasisSearch.o   # Compile main.cpp
+BestBasis_IterativeSearch.o: BestBasis_IterativeSearch.cpp data.h
+	g++ $(CXXFLAGS) -c BestBasis_IterativeSearch.cpp -o BestBasis_IterativeSearch.o   # Compile main.cpp
+
+BestBasis_ExhaustiveSearch.o: BestBasis_ExhaustiveSearch.cpp data.h
+	g++ $(CXXFLAGS) -c BestBasis_ExhaustiveSearch.cpp -o BestBasis_ExhaustiveSearch.o   # Compile main.cpp
 
 clean:
 	rm main.o $(objects) $(objectsWdataH) BestBasis.out #main

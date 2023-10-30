@@ -51,6 +51,9 @@ vector<Operator64> BestBasisSearch_FixedRepresentation(vector<pair<uint64_t, uns
 // Changing representation:
 vector<Operator64> BestBasisSearch_Final(vector<pair<uint64_t, unsigned int>> Nvect, unsigned int n, unsigned int N, unsigned int k_max, bool bool_print = false);
 
+// Exhaustive Search:
+vector<Operator64> BestBasis_ExhaustiveSearch(vector<pair<uint64_t, unsigned int>> Nvect, unsigned int n, unsigned int N, bool bool_print = false);
+
 /******************************************************************************/
 /************************** MAIN **********************************************/
 /******************************************************************************/
@@ -116,6 +119,19 @@ int main(int argc, char *argv[])
     //Is_Basis(BestBasis_k2, n);   // this function can check if a set of Operators is in independent set
 
     Histo_BasisOpOrder(BestBasis);
+
+    cout << endl << "*******************************************************************************************";
+    cout << endl << "*******************************************************************************************";
+    cout << endl << "**********************************  EXHAUSTIVE SEARCH:  ***********************************";
+    cout << endl << "*******************************************************************************************";
+    cout << endl << "*******************************************************************************************" << endl;
+
+    cout << "The Exhaustive Search is not recommended for dataset with more than n~20 variables." << endl << endl;
+
+    BestBasis = BestBasis_ExhaustiveSearch(Nvect, n, N, bool_print);
+
+    PrintTerm_OpBasis(BestBasis, n, N);  
+
 
     cout << endl << "*******************************************************************************************";
     cout << endl << "*******************************************************************************************";

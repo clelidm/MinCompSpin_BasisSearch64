@@ -65,7 +65,7 @@ void PrintFile_OpSet(set<Operator64> OpSet, unsigned int n, string filename)
 /********************     AVERAGES and OBSERVABLES   **************************/
 /******************************************************************************/
 // Number of times an operator is equal to 1 ( = <phi> in the {0,1} representation ) in the dataset
-unsigned int K1_op_vect(vector<pair<uint64_t, unsigned int>> Nvect, uint64_t Op)  // Complexity = O(|Nset|)
+unsigned int K1_Op(vector<pair<uint64_t, unsigned int>> Nvect, uint64_t Op)  // Complexity = O(|Nset|)
 {
   unsigned int K1=0;
 
@@ -76,12 +76,12 @@ unsigned int K1_op_vect(vector<pair<uint64_t, unsigned int>> Nvect, uint64_t Op)
 }
 
 // ******* Data averages are taken using ISING convention: ******************** / 
-Operator64 Value_Op_vect(uint64_t Op_bin, vector<pair<uint64_t, unsigned int>> Nvect, double Nd)
+Operator64 Value_Op(uint64_t Op_bin, vector<pair<uint64_t, unsigned int>> Nvect, double Nd)
 {
   Operator64 Op;
 
   Op.bin = Op_bin;
-  Op.k1 = K1_op_vect(Nvect, Op.bin);
+  Op.k1 = K1_Op(Nvect, Op.bin);
 
   //Op.S = (Op.p1_D==0 || Op.p1_D==1)? 0: -( (Op.p1_D*log(Op.p1_D) + (1.-Op.p1_D)*log(1.-Op.p1_D)) ); // Entropy of Op in the data
   //Op.DKL = log(2.)-Op.S;   // DK = max-log-likelihood for each Op, translated by (log2) and divided by N
@@ -93,11 +93,11 @@ Operator64 Value_Op_vect(uint64_t Op_bin, vector<pair<uint64_t, unsigned int>> N
 }
 
 /******************************************************************************/
-/***********************   All Operator with 1 bit only  **********************/
+/***********************   All Operators with 1 bit only  *********************/
 /************************   Find the lowest bias value  ***********************/
 /******************************************************************************/
 // this value will serve as a lower bound for operators that we will keep later on.
-set<Operator64> LowerBound_Op1_bias_vect(vector<pair<uint64_t, unsigned int>> Nvect, unsigned int n, unsigned int N, double *lowest_bias, bool print = false)
+set<Operator64> All_Op_k1(vector<pair<uint64_t, unsigned int>> Nvect, unsigned int n, unsigned int N, double *lowest_bias, bool print = false)
 {
   auto start = chrono::system_clock::now();
 
@@ -112,7 +112,7 @@ set<Operator64> LowerBound_Op1_bias_vect(vector<pair<uint64_t, unsigned int>> Nv
   uint64_t un_i = 1;
   for (int i=0; i<n; i++) // All Fields:
   { 
-    Op = Value_Op_vect(un_i, Nvect, Nd);
+    Op = Value_Op(un_i, Nvect, Nd);
     OpSet.insert(Op);
     //if (Op.bias < (*lowest_bias)) { (*lowest_bias) = Op.bias; }
     if(print)
@@ -143,11 +143,11 @@ set<Operator64> LowerBound_Op1_bias_vect(vector<pair<uint64_t, unsigned int>> Nv
   cout << endl << "Elapsed time (in s): " << elapsed.count() << endl << endl; 
 
 // Estimated time for next values of 'k':
-  cout << "Estimated times (in s) for large values of \'k\':" << endl;
+  cout << "Estimated times (in s) for larger values of \'k\':" << endl;
 
   double time_estimate = 0;
   for (unsigned int k=2; k<6; k++) {
-    time_estimate = elapsed.count()/50.*Choose(50, k);
+    time_estimate = elapsed.count()/n*Choose(n, k);
     cout << "\t k = " << k << ": \t" << time_estimate << " s \t" << time_estimate/60. << " min" << endl;
   }
   cout << endl;
@@ -184,7 +184,7 @@ bool Incr_k_bits(unsigned int k, uint64_t *a, unsigned int n)  //only for (k <= 
 }
 
 
-void all_int_k_bits64(unsigned int k, uint32_t *compt, unsigned int n)  //only for (k <= n)
+void all_int_k_bits(unsigned int k, uint32_t *compt, unsigned int n)  //only for (k <= n)
 {
     uint64_t a = (one64 << k) - 1;  // intialise "a" with the k first bits set at 1
     bool stop = false;
@@ -207,7 +207,7 @@ void all_int_k_bits64(unsigned int k, uint32_t *compt, unsigned int n)  //only f
 /***************   All fields and all pairwise interactions   *****************/
 /******************************************************************************/
 
-void Add_Op_kbits_MostBiased_rank64_vect(set<Operator64>& OpSet, vector<pair<uint64_t, unsigned int>> Nvect, unsigned int n, unsigned int N, unsigned int k = 2, double Bias_LowerBound=0, bool print = false)  
+void Add_AllOp_kbits_MostBiased(set<Operator64>& OpSet, vector<pair<uint64_t, unsigned int>> Nvect, unsigned int n, unsigned int N, unsigned int k = 2, double Bias_LowerBound=0, bool print = false)  
 {
   auto start = chrono::system_clock::now(); 
 
@@ -221,7 +221,7 @@ void Add_Op_kbits_MostBiased_rank64_vect(set<Operator64>& OpSet, vector<pair<uin
 
 // intialise "Op_bin" with the "k" first bits set at 1 --> first operator:
   uint64_t Op_bin = (one64 << k) - 1; 
-  Operator64 Op = Value_Op_vect(Op_bin, Nvect, Nd);
+  Operator64 Op = Value_Op(Op_bin, Nvect, Nd);
   if (Op.bias > Bias_LowerBound)  { OpSet.insert(Op); }
   uint32_t compt = 1;
 
@@ -234,7 +234,7 @@ void Add_Op_kbits_MostBiased_rank64_vect(set<Operator64>& OpSet, vector<pair<uin
   while (!stop)
   {
     stop = Incr_k_bits(k, &Op_bin, n); 
-    Op = Value_Op_vect(Op_bin, Nvect, Nd);
+    Op = Value_Op(Op_bin, Nvect, Nd);
     if (Op.bias > Bias_LowerBound) { OpSet.insert(Op); }  
     if(print) {   
       cout << int_to_bstring(Op.bin, n) << "\t Bias = " << Op.bias << "\t";
@@ -250,13 +250,13 @@ void Add_Op_kbits_MostBiased_rank64_vect(set<Operator64>& OpSet, vector<pair<uin
   cout << endl << "Elapsed time (in s): " << elapsed.count() << endl << endl;  
 
 // Estimated time for next values of 'k':
-  cout << "Estimated times (in s) for large values of \'k\':" << endl;
+  cout << "Estimated times (in s) for larger values of \'k\':" << endl;
 
   double time_estimate = 0;
-  double ch_k = Choose(50, k);
+  double ch_k = Choose(n, k);
 
   for (unsigned int kk=k; kk<k+4; kk++) {
-    time_estimate = elapsed.count() / ch_k * Choose(50, kk);
+    time_estimate = elapsed.count() / ch_k * Choose(n, kk);
     cout << "\t k = " << kk << ": \t" << time_estimate << " s \t" << time_estimate/60. << " min" << endl;
   }
   cout << endl;
@@ -267,7 +267,7 @@ void Add_Op_kbits_MostBiased_rank64_vect(set<Operator64>& OpSet, vector<pair<uin
 /********************   All Operators with k bits or less  ********************/
 /*******************   All interactions of order k or less   ******************/
 /******************************************************************************/
-
+/*
 set<Operator64> all_Op_UpTo_k_bits_MostBiased_rank64(vector<pair<uint64_t, unsigned int>> Nvect, unsigned int n, unsigned int N, unsigned int k, double Bias_LowerBound=0, bool print = false) 
 {
   set<Operator64> OpSet; // Set of all the fields and pairwise operators ordered by bias 
@@ -281,7 +281,7 @@ set<Operator64> all_Op_UpTo_k_bits_MostBiased_rank64(vector<pair<uint64_t, unsig
   for (unsigned int ki=1; ki<=k; ki++)
   {
     Op_bin = (one64 << ki) - 1;  // intialise "a" with the ki first bits set at 1
-    Op = Value_Op_vect(Op_bin, Nvect, Nd);
+    Op = Value_Op(Op_bin, Nvect, Nd);
     if (Op.bias > Bias_LowerBound) { OpSet.insert(Op); }
 
     //std::cout << int_to_bstring(Op_bin, n) << std::endl;
@@ -292,13 +292,14 @@ set<Operator64> all_Op_UpTo_k_bits_MostBiased_rank64(vector<pair<uint64_t, unsig
     while (!stop)
       {
         stop = Incr_k_bits(k, &Op_bin, n); 
-        Op = Value_Op_vect(Op_bin, Nvect, Nd);
+        Op = Value_Op(Op_bin, Nvect, Nd);
         if (Op.bias > Bias_LowerBound) { OpSet.insert(Op); }
         //std::cout << stop << ": \t" << int_to_bstring(Op_bin, n) << std::endl; 
       } 
   }
   return OpSet;
 }
+*/
 
 /******************************************************************************/
 /********************   REMOVE OPERATORS with SMALL BIAS  *********************/
@@ -315,55 +316,4 @@ void CutSmallBias(set<Operator64>& OpSet, Struct_LowerBound LB)
 
   cout << endl;
 }
-
-/******************************************************************************/
-/********************   All Operators with 2 or 1 bit(s)  *********************/
-/***************   All fields and all pairwise interactions   *****************/
-/******************************************************************************/
-/*
-set<Operator64> all_Op_1_2_bits_MostBiased_rank64_vect(vector<pair<uint64_t, unsigned int>> Nvect, unsigned int n, unsigned int N, double Bias_LowerBound=0, bool print = false)  
-{
-  set<Operator64> OpSet; // Set of all the fields and pairwise operators ordered by bias
-  Operator64 Op;
-
-  double Nd = (double) N;
-  if (Bias_LowerBound == 0 ) 
-    { Bias_LowerBound = alpha * 0.5 / sqrt(Nd); }
-
-  cout << "--> Compute and rank all the observables of order 1 (fields) and 2 (pairwise interactions).. " << endl; 
-
-  auto start = chrono::system_clock::now(); 
-  auto end = chrono::system_clock::now(); 
-  chrono::duration<double> elapsed = end - start; 
-
-  uint64_t un_i = 1;
-  uint64_t un_j = un_i << 1;
-
-  for (int i=0; i<n; i++)
-  { 
-    // Field:
-    Op = Value_Op(un_i, Nset, Nd);
-    if (Op.bias > Bias_LowerBound)  { OpSet.insert(Op); }
-
-    if(print)
-    { 
-      end = chrono::system_clock::now();  elapsed = end - start;
-      std::cout << "Position of lower index: i = " << i << ", \t Elapsed time (in s): " << elapsed.count() << endl;  
-    }
-
-    // Pairwise:
-    un_j = un_i << 1;
-    for (int j=i+1; j<n; j++)
-    {
-      Op = Value_Op(un_i + un_j, Nset, Nd);
-      if (Op.bias > Bias_LowerBound)  { OpSet.insert(Op); }
-      un_j = un_j << 1;
-    }
-    un_i = un_i << 1;
-  }
-
-  cout << "\t Done." << endl << endl; 
-
-  return OpSet;
-} */
 

@@ -48,7 +48,7 @@ class MatrixF2 {
 
   unsigned int OpSet_offset=0; // number of Operators already analysed
 
-  // constructor to initialize marks
+  // constructor: 
   MatrixF2(unsigned int n_, unsigned int m_) {
     n = n_;
     m = m_;
@@ -68,7 +68,14 @@ class MatrixF2 {
   }
 };
 
+/*
+class Data {   // ***** The data is stored in Nvect as an histogram:  
+  unsigned int n;  // number of binary variables
+  unsigned int N;  // total number of datapoints
 
+  vector<pair<uint64_t, unsigned int>> Nvect; // Nvect[mu] = #of time state mu appears in the data set
+};
+*/
 
 
 
