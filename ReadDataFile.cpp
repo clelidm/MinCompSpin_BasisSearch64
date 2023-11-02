@@ -54,9 +54,10 @@ vector<pair<uint64_t, unsigned int>> read_datafile64_vect(string datafilename, u
       //cout << line << endl;   //cout << state << " :  " << int_to_bstring(state, r) << endl;
       (*N)++;
     }
-    myfile.close();
   }
   else cout << endl << "--->> Unable to open file: Check datafilename and location." << endl << endl;
+  
+  myfile.close();
 
   if ((*N) == 0) 
     { 
