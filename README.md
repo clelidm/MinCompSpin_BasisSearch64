@@ -9,24 +9,24 @@ This program searches for the **Best Basis representation for a chosen binary da
 
 The Best basis for a binary data with `n` variables is the one for which the independent model formed by `n` field operators has the largest log-likelihood (and therefore the largest log-evidence, as all independent model with the same number of operators are equivalent -- see Ref[1]).
 
-There are three main functions that you can use to search for the best basis from the `main.cpp`:
+There are three main functions that you can use to **search for the best basis** from the `main.cpp`:
 
  1) **Exhaustive Search:** This function will compute all $2^n-1$ operators and will search for the best basis among them with a Greedy approach (i.e. rank them from the most to least biased and extract the set of `n` most bias independent operators starting from the most biased one):
 ```c++
 vector<Operator64> BestBasis_ExhaustiveSearch(vector<pair<uint64_t, unsigned int>> Nvect, unsigned int n, unsigned int N, bool bool_print = false)
 ```
 
- 2) **In a fixed representation:** This function searches for the best Basis among all operators up to order `kmax` in the a given representation (the one in which the dataset stored in Nvect is written in):
+ 2) **In a fixed representation up to order `kmax`:** This function searches for the best Basis among all operators up to order `kmax` in the a given representation (which is the representation used when storing the data in `Nvect`):
 ```c++
 BestBasisSearch_FixedRepresentation(vector<pair<uint64_t, unsigned int>> Nvect, unsigned int n, unsigned int N, unsigned int k_max, unsigned int B_it, bool bool_print = false)
 ```
 If you take the largest order to be equal to the number of variables (`kmax = n`), then this function will perform an exhaustive search for the best basis among all possible operators. Note: we advise doing such search only for small systems (up to ~15 variables).
 
- 3) **In varying representations:**
+ 3) **In varying representations:** This is the recommended approach when the number of variable exceeds $n=15-20$. A priori, this heuristic approach is able to explore possible basis interactions of any high order.
 ```c++
 vector<Operator64> BestBasisSearch_Final(vector<pair<uint64_t, unsigned int>> Nvect, unsigned int n, unsigned int N, unsigned int k_max, bool bool_print = false)
 ```
-This function performs the search procedure described in Ref.[1]. The codes searches for the best basis up to order `k_max`; the data is then successively transformed in the representation given by the previously found best basis and a new best basis searched for in this representation. The algorithm stops when the new basis found is identitity (i.e. the basis has not changed).
+This function performs the search procedure described in Ref.[1]. The program first searches for the best basis up to order `k_max`; the data is then successively transformed in the representation given by the previously found best basis, and the program search for the new best basis in this representation. The algorithm stops when the new basis found is the identity (i.e. the basis has not changed).
 
 ## Requirements
 
