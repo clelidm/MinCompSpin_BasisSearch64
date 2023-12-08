@@ -1,4 +1,4 @@
-# Search for the Best Basis Representation of a Binary Dataset
+# Search for the Best Basis Representation of a Binary Dataset with up to n=64 variables
 # or: Best Independent Minimally Complex Models (MCM)
 
 This program searches for the **Best Basis representation for a chosen binary dataset**, while taking into account possible **high-order patterns of the data**. It was develop for the paper [*Statistical Inference of Minimally Complex Models*](https://arxiv.org/abs/2008.00520) [1]. More details on the general algorithm can be found in the paper.
