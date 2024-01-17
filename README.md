@@ -15,12 +15,13 @@ There are three main functions that you can use to **search for the best basis**
 ```c++
 vector<Operator64> BestBasis_ExhaustiveSearch(vector<pair<uint64_t, unsigned int>> Nvect, unsigned int n, unsigned int N, bool bool_print = false)
 ```
+Note: we advise doing such search only for small systems (up to ~15 variables).
 
  2) **Search in a fixed representation up to order `kmax`:** This function searches for the best Basis among all operators up to order `kmax` in the a given representation (which is the representation used when storing the data in `Nvect` -- by default, this is the original representation of the data):
 ```c++
 BestBasisSearch_FixedRepresentation(vector<pair<uint64_t, unsigned int>> Nvect, unsigned int n, unsigned int N, unsigned int k_max, unsigned int B_it, bool bool_print = false)
 ```
-If you take the largest order to be equal to the number of variables (`kmax = n`), then this function will perform an exhaustive search for the best basis among all possible operators. Note: we advise doing such search only for small systems (up to ~15 variables).
+If you take the largest order to be equal to the number of variables (`kmax = n`), then this function will perform an exhaustive search for the best basis among all possible operators.
 
  3) **Search in varying representations:** This is the recommended approach when the number of variables exceeds $n\simeq 15$ - $20$. A priori, this heuristic approach is able to explore possible basis interactions of any high order.
 ```c++
